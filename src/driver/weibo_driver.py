@@ -70,6 +70,7 @@ class WeiBoDriver(object):
                     continue
                 try:
                     driver = webdriver.PhantomJS(phantom_js_driver_file)
+                    # todo add random from specific configs
                     driver.set_window_size(1640, 689)
                     driver.get(url_login)
                     time.sleep(random.uniform(4, 6))
