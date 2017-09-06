@@ -1,11 +1,11 @@
 from config.weibo_config import SUPPORT_MODEL
-from driver.weibo_driver import WeiBoDriver
+from extract.weibo_extract import WeiBoExtract
 
 
 def get_extract(name):
     if name not in SUPPORT_MODEL:
         raise NameError('not supported model')
     if name == "weibo":
-        return WeiBoDriver()
+        return WeiBoExtract()
 
     assert 0, "Bad shape creation: " + name

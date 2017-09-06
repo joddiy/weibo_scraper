@@ -6,7 +6,5 @@ class WeiBoExtract(object):
         driver = WeiBoDriver()
         driver.run()
 
-    # Create based on class name:
-
     def run(self):
         pass
