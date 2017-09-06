@@ -1,4 +1,4 @@
-from src.extract.WeiboExtract import WeiboExtract
+from src.extract.weibo_extract import WeiboExtract
 
 
 class ExtractFactory(object):

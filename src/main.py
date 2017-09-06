@@ -1,6 +1,6 @@
 import argparse
 
-from src.extract.ExtractFactory import ExtractFactory
+from src.extract.extract_factory import ExtractFactory
 
 
 def parse_args():
