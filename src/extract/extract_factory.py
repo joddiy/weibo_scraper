@@ -1,11 +1,11 @@
-from src.extract.weibo_extract import WeiboExtract
+from config.weibo_config import SUPPORT_MODEL
+from driver.weibo_driver import WeiBoDriver
 
 
-class ExtractFactory(object):
-    def factory(name):
-        if name == "weibo":
-            return WeiboExtract()
+def get_extract(name):
+    if name not in SUPPORT_MODEL:
+        raise NameError('not supported model')
+    if name == "weibo":
+        return WeiBoDriver()
 
-        assert 0, "Bad shape creation: " + name
-
-    factory = staticmethod(factory)
+    assert 0, "Bad shape creation: " + name

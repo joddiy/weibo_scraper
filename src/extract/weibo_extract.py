@@ -1,12 +1,12 @@
-from src.driver import weibo_driver
+from driver.weibo_driver import WeiBoDriver
 
 
-class WeiboExtract(object):
+class WeiBoExtract(object):
     def __init__(self):
-        driver = weibo_driver()
+        driver = WeiBoDriver()
         driver.run()
 
     # Create based on class name:
 
-    def run(type):
-        a = 1
+    def run(self):
+        pass
