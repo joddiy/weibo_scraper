@@ -33,8 +33,11 @@ def parse_args():
     help_ = 'debug mode for develop. set 1 on, set 0 off.'
     parser.add_argument('-d', '--debug', default='1', help=help_)
 
+    help_ = 'which extract to select.'
+    parser.add_argument('-e', '--extract', default='weibo', help=help_)
+
     help_ = 'which model to select.'
-    parser.add_argument('-m', '--model', default='weibo', help=help_)
+    parser.add_argument('-f', '--model', default='hot_search', help=help_)
 
     args_ = parser.parse_args()
     return args_
@@ -42,16 +45,15 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
+    extract = args.extract
     model = args.model
-    if model not in weibo_config.SUPPORT_MODEL:
-        print('model %s should be one of' % model, weibo_config.SUPPORT_MODEL)
+    if extract not in weibo_config.SUPPORT_EXTRACT:
+        print('extract %s should be one of' % extract, weibo_config.SUPPORT_EXTRACT)
     else:
         if args.debug == '1':
-            extract = get_extract(model)
-            extract.run()
+            get_extract(extract).run(model)
 
         elif args.debug == '0':
             pass
 
-        else:
-            print('debug mode error, set 1 on, set 0 off.')
+        assert 0, "error"

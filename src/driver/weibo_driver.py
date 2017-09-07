@@ -23,22 +23,38 @@
 import json
 import os
 import pickle
+import requests
 import random
 import time
 from selenium import webdriver
 from selenium.common.exceptions import InvalidElementStateException
+from user_agent import generate_user_agent
 
-from src.config.weibo_config import COOKIES_SAVE_PATH, LOGIN_URL, ACCOUNTS_PATH, PHANTOM_JS_PATH
+from src.config.weibo_config import COOKIES_SAVE_PATH, LOGIN_URL, ACCOUNTS_PATH, PHANTOM_JS_PATH, HEADERS_SAVE_PATH
 
 
 class WeiBoDriver(object):
     def __init__(self):
         self.cookies = {}
+        self.headers = {}
 
-    def run(self):
-        self.load_cookies()
+    def get_cookies(self):
+        """
+        get cookies
+        :return:
+        """
+        self._load_cookies()
+        return self.cookies
 
-    def load_cookies(self):
+    def get_headers(self):
+        """
+        get headers
+        :return:
+        """
+        self._load_headers()
+        return self.headers
+
+    def _load_cookies(self):
         """
         load cookies from local file, if not exist then get it
         :return:
@@ -51,6 +67,29 @@ class WeiBoDriver(object):
 
         try:
             with open(COOKIES_SAVE_PATH, 'wb') as f:
+                pickle.dump(self.cookies, f)
+        except Exception as e:
+            print(e)
+
+    def _load_headers(self):
+        """
+        load headers from local file, if not exist then get it
+        :return:
+        """
+        if os.path.exists(HEADERS_SAVE_PATH):
+            with open(HEADERS_SAVE_PATH, 'rb') as f:
+                self.cookies = pickle.load(f)
+
+        for user_id in self.cookies.keys():
+            headers = requests.utils.default_headers()
+            user_agent = {
+                'User-Agent': generate_user_agent()
+            }
+            headers.update(user_agent)
+            self.headers[user_id] = headers
+
+        try:
+            with open(HEADERS_SAVE_PATH, 'wb') as f:
                 pickle.dump(self.cookies, f)
         except Exception as e:
             print(e)
