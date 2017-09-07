@@ -19,9 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------
-from extract.weibo.weibo_hot_search import WeiBoHotSearch
+from src.extract.weibo.weibo_hot_search import WeiBoHotSearch
 from src.driver.weibo_driver import WeiBoDriver
-from config import weibo_config
+from src.config.weibo_config import SUPPORT_MODEL
 
 
 class WeiBoExtract(object):
@@ -31,8 +31,7 @@ class WeiBoExtract(object):
         self.headers = driver.get_headers()
 
     def run(self, model):
-        if model not in weibo_config.SUPPORT_EXTRACT:
-            raise NameError('model %s should be one of' % model, weibo_config.SUPPORT_EXTRACT)
+        if model not in SUPPORT_MODEL:
+            raise NameError('model %s should be one of' % model, SUPPORT_MODEL)
         if model == "hot_search":
             WeiBoHotSearch(self.cookies, self.headers).run()
-

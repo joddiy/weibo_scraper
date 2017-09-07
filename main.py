@@ -55,5 +55,3 @@ if __name__ == '__main__':
 
         elif args.debug == '0':
             pass
-
-        assert 0, "error"

@@ -41,15 +41,5 @@ class WeiBoHotSearch:
         }
         self.html = requests.get(url, cookies=cookie, headers=self.headers[user_id]).content
         xtree = etree.HTML(self.html)
-
-    def _get_user_name(self):
-        print('-- getting user name')
-        try:
-
-            self.user_name = selector.xpath('//table//div[@class="ut"]/span[1]/text()')[0]
-            print('current user name is: {}'.format(self.user_name))
-        except Exception as e:
-            print(e)
-            print('html not properly loaded, maybe cookies out of date or account being banned. '
-                  'change an account please')
-            exit()
+        divs = xtree.xpath("/html/body/div[contains(@id,'M_')]")
+        print(divs)

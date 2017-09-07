@@ -21,12 +21,12 @@
 # ------------------------------------------------------------------------
 
 
-from src.config.weibo_config import SUPPORT_MODEL
+from src.config.weibo_config import SUPPORT_EXTRACT
 from src.extract.weibo_extract import WeiBoExtract
 
 
 def get_extract(name):
-    if name not in SUPPORT_MODEL:
+    if name not in SUPPORT_EXTRACT:
         raise NameError('not supported model')
     if name == "weibo":
         return WeiBoExtract()
