@@ -104,3 +104,5 @@ ENV/
 src/config/*
 src/cache/*
 .idea
+git.sh
+.DS_Store
