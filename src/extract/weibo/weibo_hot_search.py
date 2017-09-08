@@ -24,7 +24,7 @@ import random
 import time
 import json
 from lxml import etree
-from src.utils.utils import addslashes
+from src.utils.utils import addslashes, format_time
 
 
 class WeiBoHotSearch(object):
@@ -35,13 +35,14 @@ class WeiBoHotSearch(object):
         self.config = json.loads(config)
 
     def run(self):
-        for page in range(1):
+        for page in range(100):
             self._crawl(self.config['keyword'], page, '15623006741')
             time.sleep(random.uniform(1, 2))
+            print(page)
         return self.data
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&page=%d' % (keyword, page)
+        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&page=%d' % (keyword, page)
         cookie = {
             "Cookie": self.cookies[user_id]
         }
@@ -49,12 +50,54 @@ class WeiBoHotSearch(object):
         x_tree = etree.HTML(html)
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
         for child in divs:
-            item_name = child.xpath('div[1]/a[1]/text()')[0]
-            item_time = child.xpath('div[last()]/span[last()]/text()')[0]
-            item_texts = child.xpath('div[1]/span/text()')
-            item_text = ','.join(item_texts[:len(item_texts) - 1])
             row = {
-                "uname": addslashes(item_name),
-                "data": addslashes(item_text),
+                "uid": addslashes(self._get_uid(child)),
+                "uname": addslashes(self._get_uname(child)),
+                "data": addslashes(self._get_commit_text(child)),
+                "commit_time": addslashes(self._get_commit_time(child))
             }
             self.data.append(row)
+
+    @staticmethod
+    def _get_uname(x_tree):
+        """
+        get user name
+        :param x_tree:
+        :return:
+        """
+        return x_tree.xpath('div[1]/a[1]/text()')[0]
+
+    @staticmethod
+    def _get_uid(x_tree):
+        """
+        get user id
+        :param x_tree:
+        :return:
+        """
+        href = x_tree.xpath('div[1]/a[1]/@href')[0]
+        *_, uid = href.split('/')
+        return uid
+
+    @staticmethod
+    def _get_commit_time(x_tree):
+        """
+        get comment time
+        :param x_tree:
+        :return:
+        """
+        tmp = x_tree.xpath('div[last()]/span[last()]/text()')[0]
+        return format_time(tmp)
+
+    @staticmethod
+    def _get_commit_text(x_tree):
+        """
+        get comment time
+        :param x_tree:
+        :return:
+        """
+        tmp = x_tree.xpath('string(div/span)')
+        if tmp.startswith(':'):
+            tmp = tmp[1:]
+        if tmp.endswith('全文'):
+            tmp = tmp[:-2]
+        return tmp
