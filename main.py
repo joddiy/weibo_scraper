@@ -60,8 +60,8 @@ if __name__ == '__main__':
         print('extract %s should be one of' % extract, common_config.SUPPORT_EXTRACT)
     else:
         if args.debug == '1':
-            get_extract(extract).run(model, config)
-            get_load(load, extract).run(model, config)
+            data = get_extract(extract).run(model, config)
+            get_load(load).run(extract, model, data)
 
         elif args.debug == '0':
             pass

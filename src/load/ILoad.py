@@ -25,5 +25,5 @@ from abc import ABCMeta, abstractmethod
 
 class ILoad(metaclass=ABCMeta):
     @abstractmethod
-    def run(self, data):
+    def run(self, extract, model, data):
         pass

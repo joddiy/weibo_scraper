@@ -26,33 +26,36 @@ from src.config import weibo_config
 
 
 class MysqlLoad(ILoad):
-    def __init__(self, extract):
-        self.db = self._connect_db(extract)
+    def __init__(self):
         self.interval = 5000
         pass
 
-    @staticmethod
-    def _connect_db(extract):
+    def _render_db(self, extract, model):
         if extract == 'weibo':
             db_config = weibo_config.DB_CONFIG
-            return pymysql.connect(db_config['host'], db_config['username'], db_config['password'], db_config['db'])
+            self.db = pymysql.connect(host=db_config['host'], user=db_config['username'],
+                                      password=db_config['password'],
+                                      db=db_config['db'], charset="utf8")
+            self.table = db_config['table'][model]
 
-    def run(self, data):
+    def run(self, extract, model, data):
+        self._render_db(extract, model)
         db = self.db
         cursor = db.cursor()
+        cursor.execute("SET NAMES utf8");
 
+        insert_sql = ""
         # SQL 插入语句
-        sql = """INSERT INTO EMPLOYEE(FIRST_NAME,
-                 LAST_NAME, AGE, SEX, INCOME)
-                 VALUES ('Mac', 'Mohan', 20, 'M', 2000)"""
         for item in data:
-            keys = "','".join(item.keys())
-            values = "','".join(item.keys())
-
-
+            sql = """INSERT INTO {table} ({K}) VALUES ('{V}')"""
+            keys = ",".join(item.keys())
+            values = "','".join(item.values())
+            sql = sql.format(table=self.table, K=keys, V=values)
+            insert_sql += sql + ";\n"
+        print(insert_sql)
         try:
             # 执行sql语句
-            cursor.execute(sql)
+            cursor.execute(insert_sql)
             # 提交到数据库执行
             db.commit()
         except:

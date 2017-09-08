@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# file: load_factory.py
+# file: utils.py
 # author: joddiyzhang@gmail.com
-# time: 2017/9/8 下午2:37
+# time: 2017/9/8 下午4:43
 # Copyright (C) <2017>  <Joddiy Zhang>
 #
 # This file is part of GNU Bash, the Bourne Again SHell.
@@ -21,14 +21,8 @@
 # ------------------------------------------------------------------------
 
 
-from src.config.common_config import SUPPORT_LOAD
-from src.load.mysql_load import MysqlLoad
+def addslashes(s):
+    d = {'"': '\\"', "'": "\\'", "\0": "\\\0", "\\": "\\\\"}
+    return ''.join(d.get(c, c) for c in s)
 
 
-def get_load(load):
-    if load not in SUPPORT_LOAD:
-        raise NameError('not supported load')
-    if load == "mysql":
-        return MysqlLoad()
-
-    assert 0, "Bad shape creation: " + load
