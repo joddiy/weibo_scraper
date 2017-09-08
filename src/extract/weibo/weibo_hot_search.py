@@ -25,15 +25,16 @@ import time
 import json
 from lxml import etree
 
+from src.extract.IModel import IModel
 
-class WeiBoHotSearch:
+
+class WeiBoHotSearch(IModel):
     def __init__(self, cookies, headers, config):
         self.cookies = cookies
         self.headers = headers
         self.config = json.loads(config)
 
     def run(self):
-
         for page in range(10):
             self._get_html(self.config['keyword'], page, '15623006741')
             time.sleep(random.uniform(1, 2))

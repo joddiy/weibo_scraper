@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# file: weibo_extract.py
+# file: mysql_load.py
 # author: joddiyzhang@gmail.com
-# time: 2017/9/6 下午9:45
+# time: 2017/9/8 下午2:37
 # Copyright (C) <2017>  <Joddiy Zhang>
 #
 # This file is part of GNU Bash, the Bourne Again SHell.
@@ -19,20 +19,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Bash.  If not, see <http://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------
-from src.extract.IExtract import IExtract
-from src.extract.weibo.weibo_hot_search import WeiBoHotSearch
-from src.driver.weibo_driver import WeiBoDriver
-from src.config.weibo_config import SUPPORT_MODEL
+from src.load.ILoad import ILoad
 
 
-class WeiBoExtract(IExtract):
+class MysqlLoad(ILoad):
     def __init__(self):
-        driver = WeiBoDriver()
-        self.cookies = driver.get_cookies()
-        self.headers = driver.get_headers()
+        pass
 
-    def run(self, model, config):
-        if model not in SUPPORT_MODEL:
-            raise NameError('model %s should be one of' % model, SUPPORT_MODEL)
-        if model == "hot_search":
-            WeiBoHotSearch(self.cookies, self.headers, config).run()
+    def run(self, data):
+        pass
