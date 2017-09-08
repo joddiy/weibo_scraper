@@ -42,7 +42,7 @@ class MysqlLoad(ILoad):
         self._render_db(extract, model)
         db = self.db
         cursor = db.cursor()
-        cursor.execute("SET NAMES utf8");
+        cursor.execute("SET NAMES utf8")
 
         insert_sql = ""
         # SQL 插入语句
@@ -52,15 +52,11 @@ class MysqlLoad(ILoad):
             values = "','".join(item.values())
             sql = sql.format(table=self.table, K=keys, V=values)
             insert_sql += sql + ";\n"
-        print(insert_sql)
+
         try:
-            # 执行sql语句
             cursor.execute(insert_sql)
-            # 提交到数据库执行
             db.commit()
         except:
-            # 如果发生错误则回滚
             db.rollback()
 
-        # 关闭数据库连接
         db.close()
