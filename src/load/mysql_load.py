@@ -27,7 +27,7 @@ from src.config import weibo_config
 
 class MysqlLoad(ILoad):
     def __init__(self):
-        self.interval = 5000
+        self.interval = 20
         pass
 
     def _render_db(self, extract, model):
@@ -39,11 +39,15 @@ class MysqlLoad(ILoad):
             self.table = db_config['table'][model]
 
     def run(self, extract, model, data):
+
         self._render_db(extract, model)
         db = self.db
         cursor = db.cursor()
         cursor.execute("SET NAMES utf8")
 
+        # try:
+
+        cnt = 0
         insert_sql = ""
         # SQL 插入语句
         for item in data:
@@ -52,11 +56,16 @@ class MysqlLoad(ILoad):
             values = "','".join(item.values())
             sql = sql.format(table=self.table, K=keys, V=values)
             insert_sql += sql + ";\n"
-
-        try:
+            if cnt >= self.interval:
+                cursor.execute(insert_sql)
+                insert_sql = ""
+                cnt = 0
+            else:
+                cnt += 1
+        if cnt > 0:
             cursor.execute(insert_sql)
-            db.commit()
-        except:
-            db.rollback()
+        db.commit()
+        # except:
+        #     db.rollback()
 
         db.close()

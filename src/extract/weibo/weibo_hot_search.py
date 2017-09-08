@@ -31,15 +31,13 @@ class WeiBoHotSearch(object):
     def __init__(self, cookies, headers, config):
         self.cookies = cookies
         self.headers = headers
-        self.data = []
         self.config = json.loads(config)
 
-    def run(self):
+    def __iter__(self):
         for page in range(100):
-            self._crawl(self.config['keyword'], page, '15623006741')
+            yield from self._crawl(self.config['keyword'], page, '15623006741')
             time.sleep(random.uniform(1, 2))
             print(page)
-        return self.data
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&page=%d' % (keyword, page)
@@ -56,7 +54,7 @@ class WeiBoHotSearch(object):
                 "data": addslashes(self._get_commit_text(child)),
                 "commit_time": addslashes(self._get_commit_time(child))
             }
-            self.data.append(row)
+            yield row
 
     @staticmethod
     def _get_uname(x_tree):

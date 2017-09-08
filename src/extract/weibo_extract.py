@@ -35,4 +35,4 @@ class WeiBoExtract(IExtract):
         if model not in SUPPORT_MODEL:
             raise NameError('model %s should be one of' % model, SUPPORT_MODEL)
         if model == "hot_search":
-            return WeiBoHotSearch(self.cookies, self.headers, config).run()
+            return WeiBoHotSearch(self.cookies, self.headers, config)
