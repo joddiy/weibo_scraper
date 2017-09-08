@@ -39,6 +39,9 @@ def parse_args():
     help_ = 'which model to select.'
     parser.add_argument('-f', '--model', default='hot_search', help=help_)
 
+    help_ = 'config sent to model.'
+    parser.add_argument('-c', '--config', default='{"keyword":"铃木达央"}', help=help_)
+
     args_ = parser.parse_args()
     return args_
 
@@ -47,11 +50,12 @@ if __name__ == '__main__':
     args = parse_args()
     extract = args.extract
     model = args.model
+    config = args.config
     if extract not in weibo_config.SUPPORT_EXTRACT:
         print('extract %s should be one of' % extract, weibo_config.SUPPORT_EXTRACT)
     else:
         if args.debug == '1':
-            get_extract(extract).run(model)
+            get_extract(extract).run(model, config)
 
         elif args.debug == '0':
             pass

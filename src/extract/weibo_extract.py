@@ -30,8 +30,8 @@ class WeiBoExtract(object):
         self.cookies = driver.get_cookies()
         self.headers = driver.get_headers()
 
-    def run(self, model):
+    def run(self, model, config):
         if model not in SUPPORT_MODEL:
             raise NameError('model %s should be one of' % model, SUPPORT_MODEL)
         if model == "hot_search":
-            WeiBoHotSearch(self.cookies, self.headers).run()
+            WeiBoHotSearch(self.cookies, self.headers, config).run()
