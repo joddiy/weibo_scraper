@@ -25,10 +25,8 @@ import time
 import json
 from lxml import etree
 
-from src.extract.IModel import IModel
 
-
-class WeiBoHotSearch(IModel):
+class WeiBoHotSearch(object):
     def __init__(self, cookies, headers, config):
         self.cookies = cookies
         self.headers = headers
