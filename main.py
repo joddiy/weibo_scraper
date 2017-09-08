@@ -23,8 +23,9 @@
 
 import argparse
 
+from src.load.load_factory import get_load
 from src.extract.extract_factory import get_extract
-from src.config import weibo_config
+from src.config import common_config
 
 
 def parse_args():
@@ -42,6 +43,9 @@ def parse_args():
     help_ = 'config sent to model.'
     parser.add_argument('-c', '--config', default='{"keyword":"铃木达央"}', help=help_)
 
+    help_ = 'which load to select.'
+    parser.add_argument('-l', '--load', default='mysql', help=help_)
+
     args_ = parser.parse_args()
     return args_
 
@@ -51,11 +55,13 @@ if __name__ == '__main__':
     extract = args.extract
     model = args.model
     config = args.config
-    if extract not in weibo_config.SUPPORT_EXTRACT:
-        print('extract %s should be one of' % extract, weibo_config.SUPPORT_EXTRACT)
+    load = args.load
+    if extract not in common_config.SUPPORT_EXTRACT:
+        print('extract %s should be one of' % extract, common_config.SUPPORT_EXTRACT)
     else:
         if args.debug == '1':
             get_extract(extract).run(model, config)
+            get_load(load, extract).run(model, config)
 
         elif args.debug == '0':
             pass

@@ -21,14 +21,14 @@
 # ------------------------------------------------------------------------
 
 
-from src.config.weibo_config import SUPPORT_LOAD
+from src.config.common_config import SUPPORT_LOAD
 from src.load.mysql_load import MysqlLoad
 
 
-def get_load(name):
-    if name not in SUPPORT_LOAD:
+def get_load(load, extract):
+    if load not in SUPPORT_LOAD:
         raise NameError('not supported load')
-    if name == "mysql":
-        return MysqlLoad()
+    if load == "mysql":
+        return MysqlLoad(extract)
 
-    assert 0, "Bad shape creation: " + name
+    assert 0, "Bad shape creation: " + load

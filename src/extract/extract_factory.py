@@ -21,7 +21,7 @@
 # ------------------------------------------------------------------------
 
 
-from src.config.weibo_config import SUPPORT_EXTRACT
+from src.config.common_config import SUPPORT_EXTRACT
 from src.extract.weibo_extract import WeiBoExtract
 
 

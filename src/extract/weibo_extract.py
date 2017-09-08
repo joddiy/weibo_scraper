@@ -22,7 +22,7 @@
 from src.extract.IExtract import IExtract
 from src.extract.weibo.weibo_hot_search import WeiBoHotSearch
 from src.driver.weibo_driver import WeiBoDriver
-from src.config.weibo_config import SUPPORT_MODEL
+from src.config.common_config import SUPPORT_MODEL
 
 
 class WeiBoExtract(IExtract):
