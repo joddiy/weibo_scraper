@@ -101,7 +101,7 @@ ENV/
 .mypy_cache/
 
 
-src/config/*
+
 src/cache/*
 .idea
 git.sh
