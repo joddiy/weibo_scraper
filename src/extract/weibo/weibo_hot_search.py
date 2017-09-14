@@ -39,7 +39,7 @@ class WeiBoHotSearch(object):
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d' % (
-        keyword, page)
+            keyword, page)
         cookie = {
             "Cookie": self.cookies[user_id]
         }
@@ -55,8 +55,11 @@ class WeiBoHotSearch(object):
                 "uid": self._get_uid(child),
                 "uname": self._get_uname(child),
                 "data": self._get_commit_text(child),
+                "cnum":self._get_comment_num(child),
                 "commit_time": self._get_commit_time(child)
             }
+            print(row)
+            exit()
             yield row
 
     @staticmethod
@@ -97,6 +100,16 @@ class WeiBoHotSearch(object):
         """
         tmp = x_tree.xpath('div[last()]/span[last()]/text()')[0]
         return format_time(tmp)
+
+    @staticmethod
+    def _get_comment_num(x_tree):
+        """
+        get comment number
+        :param x_tree:
+        :return:
+        """
+        str = x_tree.xpath("div[last()]/a[last()-1]/text()")[0]
+        return str[3:len(str) - 1]
 
     @staticmethod
     def _get_commit_text(x_tree):
