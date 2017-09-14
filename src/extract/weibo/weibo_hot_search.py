@@ -46,7 +46,7 @@ class WeiBoHotSearch(object):
         html = requests.get(url, cookies=cookie, headers=self.headers[user_id]).content
         x_tree = etree.HTML(html)
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
-        if len(divs) < 10:
+        if len(divs) < 1:
             yield None
         for child in divs:
             row = {

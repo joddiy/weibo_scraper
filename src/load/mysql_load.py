@@ -56,10 +56,12 @@ class MysqlLoad(ILoad):
             if item is None:
                 break
             if is_first:
-                sql = """INSERT IGNORE INTO {table} ({K}) VALUES ({V})"""
+                sql = """INSERT INTO {table} ({K}) VALUES ({V}) ON DUPLICATE KEY UPDATE """
                 keys = ",".join(item.keys())
                 values = "%s," * (len(item) - 1) + "%s"
-                sql = sql.format(table=self.table, K=keys, V=values)
+                for key in item.keys():
+                    sql += "%s=VALUES(%s)," % (key, key)
+                sql = sql[:len(sql) - 1].format(table=self.table, K=keys, V=values)
                 is_first = False
             if cnt >= self.interval:
                 cursor.executemany(sql, items)
