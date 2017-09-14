@@ -38,13 +38,16 @@ class WeiBoHotSearch(object):
             print(page)
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d' % (keyword, page)
+        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d' % (
+        keyword, page)
         cookie = {
             "Cookie": self.cookies[user_id]
         }
         html = requests.get(url, cookies=cookie, headers=self.headers[user_id]).content
         x_tree = etree.HTML(html)
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
+        if len(divs) < 10:
+            yield None
         for child in divs:
             row = {
                 "topic": self.config['keyword'],

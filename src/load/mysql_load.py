@@ -53,6 +53,8 @@ class MysqlLoad(ILoad):
         is_first = True
         # SQL 插入语句
         for item in data:
+            if item is None:
+                break
             if is_first:
                 sql = """INSERT IGNORE INTO {table} ({K}) VALUES ({V})"""
                 keys = ",".join(item.keys())
