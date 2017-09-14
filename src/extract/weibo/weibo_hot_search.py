@@ -55,11 +55,13 @@ class WeiBoHotSearch(object):
                 "uid": self._get_uid(child),
                 "uname": self._get_uname(child),
                 "data": self._get_commit_text(child),
+                "lnum": self._get_like_num(child),
+                "rnum": self._get_repo_num(child),
                 "cnum":self._get_comment_num(child),
                 "commit_time": self._get_commit_time(child)
             }
-            print(row)
-            exit()
+            # print(row)
+            # exit()
             yield row
 
     @staticmethod
@@ -108,8 +110,28 @@ class WeiBoHotSearch(object):
         :param x_tree:
         :return:
         """
-        str = x_tree.xpath("div[last()]/a[last()-1]/text()")[0]
-        return str[3:len(str) - 1]
+        tmp = x_tree.xpath("div[last()]/a[last()-1]/text()")[0]
+        return tmp[3:len(tmp) - 1]
+
+    @staticmethod
+    def _get_repo_num(x_tree):
+        """
+        get repo number
+        :param x_tree:
+        :return:
+        """
+        tmp = x_tree.xpath("div[last()]/a[last()-2]/text()")[0]
+        return tmp[3:len(tmp) - 1]
+
+    @staticmethod
+    def _get_like_num(x_tree):
+        """
+        get like number
+        :param x_tree:
+        :return:
+        """
+        tmp = x_tree.xpath("div[last()]/a[last()-3]/text()")[0]
+        return tmp[2:len(tmp) - 1]
 
     @staticmethod
     def _get_commit_text(x_tree):
