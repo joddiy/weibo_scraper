@@ -38,7 +38,7 @@ class WeiBoHotSearch(object):
             print(page)
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&page=%d' % (keyword, page)
+        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d' % (keyword, page)
         cookie = {
             "Cookie": self.cookies[user_id]
         }
@@ -47,10 +47,12 @@ class WeiBoHotSearch(object):
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
         for child in divs:
             row = {
-                "uid": addslashes(self._get_uid(child)),
-                "uname": addslashes(self._get_uname(child)),
-                "data": addslashes(self._get_commit_text(child)),
-                "commit_time": addslashes(self._get_commit_time(child))
+                "topic": self.config['keyword'],
+                "cid": self._get_cid(child),
+                "uid": self._get_uid(child),
+                "uname": self._get_uname(child),
+                "data": self._get_commit_text(child),
+                "commit_time": self._get_commit_time(child)
             }
             yield row
 
@@ -62,6 +64,15 @@ class WeiBoHotSearch(object):
         :return:
         """
         return x_tree.xpath('div[1]/a[1]/text()')[0]
+
+    @staticmethod
+    def _get_cid(x_tree):
+        """
+        get weibo comment id
+        :param x_tree:
+        :return:
+        """
+        return x_tree.xpath('@id')[0][2:]
 
     @staticmethod
     def _get_uid(x_tree):
@@ -82,6 +93,7 @@ class WeiBoHotSearch(object):
         :return:
         """
         tmp = x_tree.xpath('div[last()]/span[last()]/text()')[0]
+        print(tmp)
         return format_time(tmp)
 
     @staticmethod

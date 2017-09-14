@@ -25,7 +25,7 @@ from src.config import weibo_config
 
 class MysqlLoad(ILoad):
     def __init__(self):
-        self.interval = 20
+        self.interval = 1
         pass
 
     def _render_db(self, extract, model):
@@ -41,27 +41,31 @@ class MysqlLoad(ILoad):
         self._render_db(extract, model)
         db = self.db
         cursor = db.cursor()
-        cursor.execute("SET NAMES utf8")
+        cursor.execute("SET NAMES utf8mb4")
 
         # try:
 
         cnt = 0
-        insert_sql = ""
+        items = []
+        is_first = True
         # SQL 插入语句
         for item in data:
-            sql = """INSERT INTO {table} ({K}) VALUES ('{V}')"""
-            keys = ",".join(item.keys())
-            values = "','".join(item.values())
-            sql = sql.format(table=self.table, K=keys, V=values)
-            insert_sql += sql + ";\n"
+            if is_first:
+                sql = """INSERT INTO {table} ({K}) VALUES ({V})"""
+                keys = ",".join(item.keys())
+                values = "%s," * (len(item) - 1) + "%s"
+                sql = sql.format(table=self.table, K=keys, V=values)
+                is_first = False
             if cnt >= self.interval:
-                cursor.execute(insert_sql)
-                insert_sql = ""
+                print(items)
+                cursor.executemany(sql, items)
                 cnt = 0
+                items.clear()
             else:
+                items.append(list(item.values()))
                 cnt += 1
         if cnt > 0:
-            cursor.execute(insert_sql)
+            cursor.executemany(sql, items)
         db.commit()
         # except:
         #     db.rollback()

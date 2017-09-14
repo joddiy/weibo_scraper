@@ -31,12 +31,11 @@ def format_time(s):
     tem_pos = tem_txt.find('前')
     if tem_pos == -1:
         if tem_txt.find('今天') == -1:
-            if tem_txt.find('年') == -1:
+            if tem_txt.find('月') != -1:
                 tem_txt = tem_txt.replace('月', '-').replace('日', '').strip()
                 return time.strftime("%Y-") + tem_txt + ":00"
             else:
-                tem_txt = tem_txt.replace('年', '-').replace('月', '-').replace('日', '').strip()
-                return tem_txt + ":00"
+                return tem_txt
         else:
             return time.strftime("%Y-%m-%d ") + tem_txt[3:].strip() + ":00"
     else:
