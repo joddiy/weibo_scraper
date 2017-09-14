@@ -22,7 +22,7 @@ import random
 import time
 import json
 from lxml import etree
-from src.utils.utils import addslashes, format_time
+from src.utils.utils import format_time
 
 
 class WeiBoHotSearch(object):
@@ -93,7 +93,6 @@ class WeiBoHotSearch(object):
         :return:
         """
         tmp = x_tree.xpath('div[last()]/span[last()]/text()')[0]
-        print(tmp)
         return format_time(tmp)
 
     @staticmethod

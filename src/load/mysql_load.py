@@ -21,11 +21,12 @@ import pymysql
 
 from src.load.ILoad import ILoad
 from src.config import weibo_config
+from warnings import filterwarnings
 
 
 class MysqlLoad(ILoad):
     def __init__(self):
-        self.interval = 1
+        self.interval = 20
         pass
 
     def _render_db(self, extract, model):
@@ -34,6 +35,8 @@ class MysqlLoad(ILoad):
             self.db = pymysql.connect(host=db_config['host'], user=db_config['username'],
                                       password=db_config['password'],
                                       db=db_config['db'], charset="utf8")
+            self.db.autocommit(True)
+            filterwarnings('ignore', category=pymysql.Warning)
             self.table = db_config['table'][model]
 
     def run(self, extract, model, data):
@@ -51,13 +54,12 @@ class MysqlLoad(ILoad):
         # SQL 插入语句
         for item in data:
             if is_first:
-                sql = """INSERT INTO {table} ({K}) VALUES ({V})"""
+                sql = """INSERT IGNORE INTO {table} ({K}) VALUES ({V})"""
                 keys = ",".join(item.keys())
                 values = "%s," * (len(item) - 1) + "%s"
                 sql = sql.format(table=self.table, K=keys, V=values)
                 is_first = False
             if cnt >= self.interval:
-                print(items)
                 cursor.executemany(sql, items)
                 cnt = 0
                 items.clear()
@@ -66,8 +68,5 @@ class MysqlLoad(ILoad):
                 cnt += 1
         if cnt > 0:
             cursor.executemany(sql, items)
-        db.commit()
-        # except:
-        #     db.rollback()
-
-        db.close()
+            # except:
+            #     db.rollback()

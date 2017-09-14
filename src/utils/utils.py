@@ -20,11 +20,6 @@
 import time
 
 
-def addslashes(s):
-    d = {'"': '\\"', "'": "\\'", "\0": "\\\0", "\\": "\\\\"}
-    return ''.join(d.get(c, c) for c in s)
-
-
 def format_time(s):
     tem_pos = s.find('来自')
     tem_txt = s[:tem_pos].strip()
@@ -43,9 +38,3 @@ def format_time(s):
         t_time = time.gmtime(int(time.time() - 60 * num) + 8 * 3600)
         return time.strftime("%Y-%m-%d %H:%M:00", t_time)
 
-
-if __name__ == '__main__':
-    # text = '2016年09月06日 06:39 来自iPhone 7 Plus'
-    # text = '55分钟前 来自微博 weibo.com'
-
-    print(format_time(text))
