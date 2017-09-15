@@ -34,7 +34,7 @@ class WeiBoFindCelebrity(object):
         self.config = json.loads(config)
 
     def __iter__(self):
-        for page in range(1, 10):
+        for page in range(1, 11):
             for cate in CELEBRITY_CATEGORY:
                 try:
                     yield from self._crawl(cate, page, '15623006741')
@@ -53,6 +53,7 @@ class WeiBoFindCelebrity(object):
                 uurl = self._get_uurl(child)
                 if uurl == 'https://weibo.cn/':
                     continue
+                time.sleep(random.uniform(0, 1))
                 u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
                 udiv = u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
                 row = {

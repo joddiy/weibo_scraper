@@ -32,7 +32,7 @@ class WeiBoHotSearch(object):
         self.config = json.loads(config)
 
     def __iter__(self):
-        for page in range(1, 30):
+        for page in range(1, 31):
             yield from self._crawl(self.config['keyword'], page, '15623006741')
             time.sleep(random.uniform(1, 2))
             print(page)
