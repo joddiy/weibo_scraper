@@ -49,15 +49,19 @@ class WeiBoTraverseCelebrity(object):
         row = cursor.fetchone()
         user_id = '15623006741'
         while row is not None:
-            # get current user's like url
-            udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
-            url = self._get_like_href(udiv)
-            # traverse to get all like persons in 20 pages
-            for page in range(1, 21):
-                yield from self._crawl(url, page, user_id)
-            time.sleep(random.uniform(0, 1))
-            row = cursor.fetchone()
-            self.redis.set('traverse_celebrity_idx', idx + 1)
+            try:
+                # get current user's like url
+                udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
+                url = self._get_like_href(udiv)
+                # traverse to get all like persons in 20 pages
+                for page in range(1, 21):
+                    yield from self._crawl(url, page, user_id)
+            except:
+                pass
+            finally:
+                time.sleep(random.uniform(0, 1))
+                row = cursor.fetchone()
+                self.redis.set('traverse_celebrity_idx', idx + 1)
         cursor.close()
         self.db.close()
 
@@ -93,6 +97,7 @@ class WeiBoTraverseCelebrity(object):
         :param header:
         :return:
         """
+
         u_tree = get_html(uurl, (), cookie, header)
         return u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
 
