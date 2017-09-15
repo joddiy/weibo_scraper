@@ -20,6 +20,7 @@
 from src.extract.IExtract import IExtract
 from src.extract.weibo.weibo_hot_search import WeiBoHotSearch
 from src.extract.weibo.weibo_find_celebrity import WeiBoFindCelebrity
+from src.extract.weibo.weibo_traverse_celebrity import WeiBoTraverseCelebrity
 from src.driver.weibo_driver import WeiBoDriver
 from src.config.common_config import SUPPORT_MODEL
 
@@ -37,3 +38,5 @@ class WeiBoExtract(IExtract):
             return WeiBoHotSearch(self.cookies, self.headers, config)
         if model == "find_celebrity":
             return WeiBoFindCelebrity(self.cookies, self.headers, config)
+        if model == "traverse_celebrity":
+            return WeiBoTraverseCelebrity(self.cookies, self.headers, config)

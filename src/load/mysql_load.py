@@ -74,3 +74,6 @@ class MysqlLoad(ILoad):
             cursor.executemany(sql, items)
             # except:
             #     db.rollback()
+
+        cursor.close()
+        db.close()

@@ -20,6 +20,7 @@
 import time
 import requests
 from lxml import etree
+import redis
 
 def format_time(s):
     """
@@ -60,4 +61,5 @@ def get_html(url, params, cookie, header):
     }
     html = requests.get(url, cookies=cookie, headers=header).content
     return etree.HTML(html)
+
 

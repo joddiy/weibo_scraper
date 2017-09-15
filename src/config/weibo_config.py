@@ -40,7 +40,7 @@ DB_CONFIG = {
     'table': {
         'hot_search': 'weibo_hotsearch',
         'find_celebrity': 'find_celebrity',
-        'weibo_traverse_celebrity': 'find_celebrity',
+        'traverse_celebrity': 'find_celebrity',
     }
 }
 

@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('-e', '--extract', default='weibo', help=help_)
 
     help_ = 'which model to select.'
-    parser.add_argument('-f', '--model', default='find_celebrity', help=help_)
+    parser.add_argument('-f', '--model', default='traverse_celebrity', help=help_)
 
     help_ = 'config sent to model.'
     parser.add_argument('-c', '--config', default='{"keyword":"铃木达央"}', help=help_)

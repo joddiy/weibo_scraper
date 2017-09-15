@@ -18,14 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------
 import pymysql
-import requests
 import random
 import time
 import json
-from lxml import etree
 from src.utils.utils import get_html
-from src.config.weibo_config import CELEBRITY_CATEGORY
 from src.config import weibo_config
+import redis
 
 
 class WeiBoTraverseCelebrity(object):
@@ -37,23 +35,32 @@ class WeiBoTraverseCelebrity(object):
         self.db = pymysql.connect(host=db_config['host'], user=db_config['username'],
                                   password=db_config['password'],
                                   db=db_config['db'], charset="utf8")
-        self.table = db_config['table']['weibo_traverse_celebrity']
+        self.table = db_config['table']['traverse_celebrity']
+        self.redis = redis.StrictRedis(host="localhost", port=6379, db=0)
 
     def __iter__(self):
-        for page in range(1, 11):
-            for cate in CELEBRITY_CATEGORY:
-                try:
-                    yield from self._crawl(cate, page, '15623006741')
-                    time.sleep(random.uniform(1, 2))
-                    print(page, cate)
-                except:
-                    continue
+        cursor = self.db.cursor()
+        idx = self.redis.get('traverse_celebrity_idx')
+        if idx is None:
+            idx = 0
+        else:
+            idx = int(idx)
+        cursor.execute("SELECT uid FROM find_celebrity WHERE id > %s" % idx)
+        row = cursor.fetchone()
+        while row is not None:
+            for page in range(1, 21):
+                yield from self._crawl(row[0], page, '15623006741')
+            time.sleep(random.uniform(0, 1))
+            row = cursor.fetchone()
+            self.redis.set('traverse_celebrity_idx', idx + 1)
+        cursor.close()
+        cursor.close()
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/pub/top?cat=%s&page=%d'
+        url = 'https://weibo.cn/%s/follow?page=%d'
         params = (keyword, page)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
-        divs = x_tree.xpath("/html/body/div[6]/table")
+        divs = x_tree.xpath("/html/body/table")
         for child in divs:
             try:
                 uurl = self._get_uurl(child)
@@ -63,7 +70,7 @@ class WeiBoTraverseCelebrity(object):
                 u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
                 udiv = u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
                 row = {
-                    "cate": keyword,
+                    "cate": 'traverse',
                     "uid": self._get_uid(uurl),
                     "uname": self._get_uname(child),
                     "cnum": self._get_post_num(udiv),
