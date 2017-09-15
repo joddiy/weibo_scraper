@@ -19,8 +19,6 @@
 # ------------------------------------------------------------------------
 
 
-
-
 SUPPORT_EXTRACT = [
     'weibo'
 ]
@@ -30,5 +28,6 @@ SUPPORT_LOAD = [
 ]
 
 SUPPORT_MODEL = [
-    'hot_search'
+    'hot_search',
+    'find_celebrity'
 ]

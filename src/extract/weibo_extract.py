@@ -19,6 +19,7 @@
 # ------------------------------------------------------------------------
 from src.extract.IExtract import IExtract
 from src.extract.weibo.weibo_hot_search import WeiBoHotSearch
+from src.extract.weibo.weibo_find_celebrity import WeiBoFindCelebrity
 from src.driver.weibo_driver import WeiBoDriver
 from src.config.common_config import SUPPORT_MODEL
 
@@ -34,3 +35,5 @@ class WeiBoExtract(IExtract):
             raise NameError('model %s should be one of' % model, SUPPORT_MODEL)
         if model == "hot_search":
             return WeiBoHotSearch(self.cookies, self.headers, config)
+        if model == "find_celebrity":
+            return WeiBoFindCelebrity(self.cookies, self.headers, config)

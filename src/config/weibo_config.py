@@ -36,6 +36,14 @@ DB_CONFIG = {
     'password': '123456',
     'db': 'main',
     'table': {
-        'hot_search': 'weibo_hotsearch'
+        'hot_search': 'weibo_hotsearch',
+        'find_celebrity': 'find_celebrity'
     }
 }
+
+CELEBRITY_CATEGORY = [
+    'star',
+    'grass',
+    'content',
+    'media'
+]

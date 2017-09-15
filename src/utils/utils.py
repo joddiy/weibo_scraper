@@ -18,9 +18,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------
 import time
-
+import requests
+from lxml import etree
 
 def format_time(s):
+    """
+
+    :param s:
+    :return:
+    """
     tem_pos = s.find('来自')
     tem_txt = s[:tem_pos].strip()
     tem_pos = tem_txt.find('前')
@@ -37,4 +43,21 @@ def format_time(s):
         num = int(tem_txt[:tem_pos - 2].strip())
         t_time = time.gmtime(int(time.time() - 60 * num) + 8 * 3600)
         return time.strftime("%Y-%m-%d %H:%M:00", t_time)
+
+
+def get_html(url, params, cookie, header):
+    """
+
+    :param url:
+    :param params:
+    :param cookie:
+    :param header:
+    :return:
+    """
+    url = url % params
+    cookie = {
+        "Cookie": cookie
+    }
+    html = requests.get(url, cookies=cookie, headers=header).content
+    return etree.HTML(html)
 

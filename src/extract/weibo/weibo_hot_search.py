@@ -22,7 +22,8 @@ import random
 import time
 import json
 from lxml import etree
-from src.utils.utils import format_time
+from src.utils.utils import get_html, format_time
+
 
 
 class WeiBoHotSearch(object):
@@ -38,19 +39,15 @@ class WeiBoHotSearch(object):
             print(page)
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d' % (
-            keyword, page)
-        cookie = {
-            "Cookie": self.cookies[user_id]
-        }
-        html = requests.get(url, cookies=cookie, headers=self.headers[user_id]).content
-        x_tree = etree.HTML(html)
+        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d'
+        params = (keyword, page)
+        x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
         if len(divs) < 1:
             yield None
         for child in divs:
             row = {
-                "topic": self.config['keyword'],
+                "topic": keyword,
                 "cid": self._get_cid(child),
                 "uid": self._get_uid(child),
                 "uname": self._get_uname(child),
