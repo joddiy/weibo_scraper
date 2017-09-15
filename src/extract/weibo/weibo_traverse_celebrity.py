@@ -50,12 +50,14 @@ class WeiBoTraverseCelebrity(object):
         user_id = '15623006741'
         while row is not None:
             try:
+                print(row[0])
                 # get current user's like url
                 udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
                 url = self._get_like_href(udiv)
                 # traverse to get all like persons in 20 pages
                 for page in range(1, 21):
                     yield from self._crawl(url, page, user_id)
+                    print(page)
             except:
                 pass
             finally:
