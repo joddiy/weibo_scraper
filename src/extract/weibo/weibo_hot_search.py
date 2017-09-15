@@ -25,7 +25,6 @@ from lxml import etree
 from src.utils.utils import get_html, format_time
 
 
-
 class WeiBoHotSearch(object):
     def __init__(self, cookies, headers, config):
         self.cookies = cookies
@@ -40,7 +39,7 @@ class WeiBoHotSearch(object):
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d'
-        params = (keyword, page)
+        params = (keyword, page + 1)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
         if len(divs) < 1:
@@ -54,7 +53,7 @@ class WeiBoHotSearch(object):
                 "data": self._get_commit_text(child),
                 "lnum": self._get_like_num(child),
                 "rnum": self._get_repo_num(child),
-                "cnum":self._get_comment_num(child),
+                "cnum": self._get_comment_num(child),
                 "commit_time": self._get_commit_time(child)
             }
             # print(row)

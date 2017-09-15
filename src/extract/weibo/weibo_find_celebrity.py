@@ -38,17 +38,22 @@ class WeiBoFindCelebrity(object):
             for cate in CELEBRITY_CATEGORY:
                 yield from self._crawl(cate, page, '15623006741')
                 time.sleep(random.uniform(1, 2))
-                print(page)
+                print(page, cate)
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/pub/top?cat=%s&page=%d'
-        params = (keyword, page)
+        params = (keyword, page + 1)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[5]/table")
+        print(divs)
+        exit()
         for child in divs:
+            print(22)
+            exit()
             uurl = self._get_uurl(child)
             x_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
             udiv = x_tree.xpath("/html/body/div[3]/div")
+
             row = {
                 "cate": keyword,
                 "uid": self._get_uid(child),
@@ -58,7 +63,6 @@ class WeiBoFindCelebrity(object):
                 "lnum": self._get_like_num(udiv),
             }
             print(row)
-            exit()
             yield row
 
     @staticmethod
@@ -119,4 +123,3 @@ class WeiBoFindCelebrity(object):
         """
         tmp = x_tree.xpath("a[last()-2]/text()")[0]
         return tmp[3:len(tmp) - 1]
-

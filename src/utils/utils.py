@@ -55,6 +55,7 @@ def get_html(url, params, cookie, header):
     :return:
     """
     url = url % params
+    print(url)
     cookie = {
         "Cookie": cookie
     }
