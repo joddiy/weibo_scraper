@@ -34,31 +34,39 @@ class WeiBoFindCelebrity(object):
         self.config = json.loads(config)
 
     def __iter__(self):
-        for page in range(10):
+        for page in range(1, 10):
             for cate in CELEBRITY_CATEGORY:
-                yield from self._crawl(cate, page, '15623006741')
-                time.sleep(random.uniform(1, 2))
-                print(page, cate)
+                try:
+                    yield from self._crawl(cate, page, '15623006741')
+                    time.sleep(random.uniform(1, 2))
+                    print(page, cate)
+                except:
+                    continue
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/pub/top?cat=%s&page=%d'
-        params = (keyword, page + 1)
+        params = (keyword, page)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[6]/table")
         for child in divs:
-            uurl = self._get_uurl(child)
-            u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
-            udiv = u_tree.xpath("/html/body/div[4]/div")[0]
-            row = {
-                "cate": keyword,
-                "uid": self._get_uid(uurl),
-                "uname": self._get_uname(child),
-                "cnum": self._get_post_num(udiv),
-                "fnum": self._get_fan_num(udiv),
-                "lnum": self._get_like_num(udiv),
-            }
-            print(row)
-            yield row
+            try:
+                uurl = self._get_uurl(child)
+                if uurl == 'https://weibo.cn/':
+                    continue
+                u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
+                udiv = u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
+                row = {
+                    "cate": keyword,
+                    "uid": self._get_uid(uurl),
+                    "uname": self._get_uname(child),
+                    "cnum": self._get_post_num(udiv),
+                    "fnum": self._get_fan_num(udiv),
+                    "lnum": self._get_like_num(udiv),
+                }
+                print(row)
+                yield row
+            except:
+                continue
 
     @staticmethod
     def _get_uid(udiv):

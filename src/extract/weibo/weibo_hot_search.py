@@ -32,14 +32,14 @@ class WeiBoHotSearch(object):
         self.config = json.loads(config)
 
     def __iter__(self):
-        for page in range(30):
+        for page in range(1, 30):
             yield from self._crawl(self.config['keyword'], page, '15623006741')
             time.sleep(random.uniform(1, 2))
             print(page)
 
     def _crawl(self, keyword, page, user_id):
         url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d'
-        params = (keyword, page + 1)
+        params = (keyword, page)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
         if len(divs) < 1:
