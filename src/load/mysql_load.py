@@ -26,7 +26,7 @@ from warnings import filterwarnings
 
 class MysqlLoad(ILoad):
     def __init__(self):
-        self.interval = 20
+        self.interval = 1
         pass
 
     def _render_db(self, extract, model):

@@ -55,12 +55,9 @@ def get_html(url, params, cookie, header):
     :return:
     """
     url = url % params
-    print(url)
     cookie = {
         "Cookie": cookie
     }
     html = requests.get(url, cookies=cookie, headers=header).content
-    print(html)
-    exit()
     return etree.HTML(html)
 

@@ -44,19 +44,14 @@ class WeiBoFindCelebrity(object):
         url = 'https://weibo.cn/pub/top?cat=%s&page=%d'
         params = (keyword, page + 1)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
-        divs = x_tree.xpath("/html/body/div[5]/table")
-        print(divs)
-        exit()
+        divs = x_tree.xpath("/html/body/div[6]/table")
         for child in divs:
-            print(22)
-            exit()
             uurl = self._get_uurl(child)
-            x_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
-            udiv = x_tree.xpath("/html/body/div[3]/div")
-
+            u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
+            udiv = u_tree.xpath("/html/body/div[4]/div")[0]
             row = {
                 "cate": keyword,
-                "uid": self._get_uid(child),
+                "uid": self._get_uid(uurl),
                 "uname": self._get_uname(child),
                 "cnum": self._get_post_num(udiv),
                 "fnum": self._get_fan_num(udiv),
@@ -66,14 +61,13 @@ class WeiBoFindCelebrity(object):
             yield row
 
     @staticmethod
-    def _get_uid(x_tree):
+    def _get_uid(udiv):
         """
         get user id
         :param x_tree:
         :return:
         """
-        href = x_tree.xpath('div[1]/a[1]/@href')[0]
-        *_, uid = href.split('/')
+        *_, uid = udiv.split('/')
         return uid
 
     @staticmethod
@@ -83,7 +77,7 @@ class WeiBoFindCelebrity(object):
         :param x_tree:
         :return:
         """
-        return x_tree.xpath('div[1]/a[1]/text()')[0]
+        return x_tree.xpath('tr/td[2]/a[1]/text()')[0]
 
     @staticmethod
     def _get_uurl(x_tree):
@@ -92,7 +86,8 @@ class WeiBoFindCelebrity(object):
         :param x_tree:
         :return:
         """
-        return x_tree.xpath('tbody/tr/td[2]/a[1]/@href')[0]
+        tmp = x_tree.xpath('tr/td[2]/a[1]/@href')[0]
+        return tmp
 
     @staticmethod
     def _get_post_num(x_tree):
@@ -101,7 +96,7 @@ class WeiBoFindCelebrity(object):
         :param x_tree:
         :return:
         """
-        tmp = x_tree.xpath("a[last()-4]/text()")[0]
+        tmp = x_tree.xpath("span/text()")[0]
         return tmp[3:len(tmp) - 1]
 
     @staticmethod
