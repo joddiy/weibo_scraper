@@ -32,33 +32,42 @@ class WeiBoHotSearch(object):
         self.config = json.loads(config)
 
     def __iter__(self):
-        for page in range(1, 31):
-            yield from self._crawl(self.config['keyword'], page, '15623006741')
-            time.sleep(random.uniform(1, 2))
-            print(page)
+        user_id = '15623006741'
+        url = "https://weibo.cn/search/"
+        x_tree = get_html(url, (), self.cookies[user_id], self.headers[user_id])
+        keywords = x_tree.xpath("/html/body/div[7]/a/text()")
+        for keyword in keywords:
+            for page in range(1, 21):
+                try:
+                    print(page)
+                    yield from self._crawl(keyword, page, '15623006741')
+                    time.sleep(random.uniform(1, 2))
+                except:
+                    continue
 
     def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=hot&page=%d'
+        url = 'https://weibo.cn/search/mblog?hideSearchFrame=&keyword=%s&filter=hasori&sort=time&page=%d'
         params = (keyword, page)
         x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/div[contains(@id,'M_')]")
-        if len(divs) < 1:
-            yield None
         for child in divs:
-            row = {
-                "topic": keyword,
-                "cid": self._get_cid(child),
-                "uid": self._get_uid(child),
-                "uname": self._get_uname(child),
-                "data": self._get_commit_text(child),
-                "lnum": self._get_like_num(child),
-                "rnum": self._get_repo_num(child),
-                "cnum": self._get_comment_num(child),
-                "commit_time": self._get_commit_time(child)
-            }
-            # print(row)
-            # exit()
-            yield row
+            try:
+                row = {
+                    "topic": keyword,
+                    "cid": self._get_cid(child),
+                    "uid": self._get_uid(child),
+                    "uname": self._get_uname(child),
+                    "data": self._get_commit_text(child),
+                    "lnum": self._get_like_num(child),
+                    "rnum": self._get_repo_num(child),
+                    "cnum": self._get_comment_num(child),
+                    "commit_time": self._get_commit_time(child)
+                }
+                # print(row)
+                # exit()
+                yield row
+            except:
+                continue
 
     @staticmethod
     def _get_uname(x_tree):

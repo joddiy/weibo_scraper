@@ -22,14 +22,16 @@ import requests
 from lxml import etree
 import redis
 
-def format_time(s):
+
+def format_time(tem_txt):
     """
 
-    :param s:
+    :param tem_txt:
     :return:
     """
-    tem_pos = s.find('来自')
-    tem_txt = s[:tem_pos].strip()
+    tem_pos = tem_txt.find('来自')
+    if tem_pos != -1:
+        tem_txt = tem_txt[:tem_pos].strip()
     tem_pos = tem_txt.find('前')
     if tem_pos == -1:
         if tem_txt.find('今天') == -1:
@@ -61,5 +63,3 @@ def get_html(url, params, cookie, header):
     }
     html = requests.get(url, cookies=cookie, headers=header).content
     return etree.HTML(html)
-
-

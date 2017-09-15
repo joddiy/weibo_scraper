@@ -48,10 +48,11 @@ class WeiBoTraverseCelebrity(object):
         cursor.execute("SELECT uid FROM find_celebrity WHERE id > %s" % idx)
         row = cursor.fetchone()
         user_id = '15623006741'
+        # get a user from db
         while row is not None:
             try:
                 print(row[0])
-                # get current user's like url
+                # get the user's like url
                 udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
                 url = self._get_like_href(udiv)
                 # traverse to get all like persons in 20 pages
@@ -71,6 +72,7 @@ class WeiBoTraverseCelebrity(object):
         url = "https://weibo.cn" + url + '?page=%d' % page
         x_tree = get_html(url, (), self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/table")
+        # get all info in this page
         for child in divs:
             try:
                 uurl = self._get_uurl(child)
