@@ -115,7 +115,7 @@ class WeiBoFindCelebrity(object):
         :param x_tree:
         :return:
         """
-        tmp = x_tree.xpath("a[last()-3]/text()")[0]
+        tmp = x_tree.xpath("a[last()-2]/text()")[0]
         return tmp[3:len(tmp) - 1]
 
     @staticmethod
@@ -125,5 +125,5 @@ class WeiBoFindCelebrity(object):
         :param x_tree:
         :return:
         """
-        tmp = x_tree.xpath("a[last()-2]/text()")[0]
+        tmp = x_tree.xpath("a[last()-3]/text()")[0]
         return tmp[3:len(tmp) - 1]

@@ -47,19 +47,23 @@ class WeiBoTraverseCelebrity(object):
             idx = int(idx)
         cursor.execute("SELECT uid FROM find_celebrity WHERE id > %s" % idx)
         row = cursor.fetchone()
+        user_id = '15623006741'
         while row is not None:
+            # get current user's like url
+            udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
+            url = self._get_like_href(udiv)
+            # traverse to get all like persons in 20 pages
             for page in range(1, 21):
-                yield from self._crawl(row[0], page, '15623006741')
+                yield from self._crawl(url, page, user_id)
             time.sleep(random.uniform(0, 1))
             row = cursor.fetchone()
             self.redis.set('traverse_celebrity_idx', idx + 1)
         cursor.close()
-        cursor.close()
+        self.db.close()
 
-    def _crawl(self, keyword, page, user_id):
-        url = 'https://weibo.cn/%s/follow?page=%d'
-        params = (keyword, page)
-        x_tree = get_html(url, params, self.cookies[user_id], self.headers[user_id])
+    def _crawl(self, url, page, user_id):
+        url = "https://weibo.cn" + url + '?page=%d' % page
+        x_tree = get_html(url, (), self.cookies[user_id], self.headers[user_id])
         divs = x_tree.xpath("/html/body/table")
         for child in divs:
             try:
@@ -67,8 +71,7 @@ class WeiBoTraverseCelebrity(object):
                 if uurl == 'https://weibo.cn/':
                     continue
                 time.sleep(random.uniform(0, 1))
-                u_tree = get_html(uurl, (), self.cookies[user_id], self.headers[user_id])
-                udiv = u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
+                udiv = self._get_udiv(uurl, self.cookies[user_id], self.headers[user_id])
                 row = {
                     "cate": 'traverse',
                     "uid": self._get_uid(uurl),
@@ -81,6 +84,17 @@ class WeiBoTraverseCelebrity(object):
                 yield row
             except:
                 continue
+
+    def _get_udiv(self, uurl, cookie, header):
+        """
+        get user homepage div
+        :param uid:
+        :param cookie:
+        :param header:
+        :return:
+        """
+        u_tree = get_html(uurl, (), cookie, header)
+        return u_tree.xpath("/html/body/div[@class='u'][1]/div")[0]
 
     @staticmethod
     def _get_uid(udiv):
@@ -128,7 +142,7 @@ class WeiBoTraverseCelebrity(object):
         :param x_tree:
         :return:
         """
-        tmp = x_tree.xpath("a[last()-3]/text()")[0]
+        tmp = x_tree.xpath("a[last()-2]/text()")[0]
         return tmp[3:len(tmp) - 1]
 
     @staticmethod
@@ -138,5 +152,14 @@ class WeiBoTraverseCelebrity(object):
         :param x_tree:
         :return:
         """
-        tmp = x_tree.xpath("a[last()-2]/text()")[0]
+        tmp = x_tree.xpath("a[last()-3]/text()")[0]
         return tmp[3:len(tmp) - 1]
+
+    @staticmethod
+    def _get_like_href(x_tree):
+        """
+        get like href
+        :param x_tree:
+        :return:
+        """
+        return x_tree.xpath("a[last()-3]/@href")[0]
