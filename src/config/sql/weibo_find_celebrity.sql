@@ -6,9 +6,11 @@ CREATE TABLE `find_celebrity` (
   `cnum` int(11) NOT NULL COMMENT '微博数',
   `fnum` int(11) NOT NULL COMMENT '粉丝数',
   `lnum` int(11) NOT NULL COMMENT '关注数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_uid` (`uid`),
   KEY `idx_cate` (`cate`),
   KEY `idx_uname` (`uname`),
   KEY `idx_num` (`cnum`,`fnum`,`lnum`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='名人榜';
+) ENGINE=InnoDB AUTO_INCREMENT=1370 DEFAULT CHARSET=utf8mb4 COMMENT='名人榜';
+SELECT * FROM main.find_celebrity;

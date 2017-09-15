@@ -29,5 +29,6 @@ SUPPORT_LOAD = [
 
 SUPPORT_MODEL = [
     'hot_search',
-    'find_celebrity'
+    'find_celebrity',
+    'weibo_traverse_celebrity',
 ]

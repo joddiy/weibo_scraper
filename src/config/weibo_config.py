@@ -18,17 +18,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ------------------------------------------------------------------------
 
+import os
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__ + "/../../"))
 
 LOGIN_URL = 'https://passport.weibo.cn/signin/login'
 
 PHANTOM_JS_PATH = '/Users/joddiyzhang/Code/JS/phantomjs-2.1.1-macosx/bin/phantomjs'
 
-COOKIES_SAVE_PATH = './src/cache/cookies.pkl'
+COOKIES_SAVE_PATH = PROJECT_DIR + '/src/cache/cookies.pkl'
 
-HEADERS_SAVE_PATH = './src/cache/headers.pkl'
+HEADERS_SAVE_PATH = PROJECT_DIR + '/src/cache/headers.pkl'
 
-ACCOUNTS_PATH = './src/cache/accounts.json'
+ACCOUNTS_PATH = PROJECT_DIR + '/src/cache/accounts.json'
 
 DB_CONFIG = {
     'host': 'localhost',
@@ -37,7 +39,8 @@ DB_CONFIG = {
     'db': 'main',
     'table': {
         'hot_search': 'weibo_hotsearch',
-        'find_celebrity': 'find_celebrity'
+        'find_celebrity': 'find_celebrity',
+        'weibo_traverse_celebrity': 'find_celebrity',
     }
 }
 
