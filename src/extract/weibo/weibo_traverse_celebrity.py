@@ -53,18 +53,19 @@ class WeiBoTraverseCelebrity(object):
             try:
                 print(row[0])
                 # get the user's like url
-                udiv = self._get_udiv("https://weibo.cn/%s" % row[0], self.cookies[user_id], self.headers[user_id])
+                uurl = "https://weibo.cn/%s" % row[0]
+                udiv = self._get_udiv(uurl, self.cookies[user_id], self.headers[user_id])
                 url = self._get_like_href(udiv)
                 # traverse to get all like persons in 20 pages
                 for page in range(1, 21):
                     yield from self._crawl(url, page, user_id)
                     print(page)
             except:
+                print("error")
                 pass
-            finally:
-                time.sleep(random.uniform(0, 1))
-                row = cursor.fetchone()
-                self.redis.set('traverse_celebrity_idx', idx + 1)
+            time.sleep(random.uniform(1, 2))
+            row = cursor.fetchone()
+            self.redis.set('traverse_celebrity_idx', idx + 1)
         cursor.close()
         self.db.close()
 
@@ -78,7 +79,7 @@ class WeiBoTraverseCelebrity(object):
                 uurl = self._get_uurl(child)
                 if uurl == 'https://weibo.cn/':
                     continue
-                time.sleep(random.uniform(0, 1))
+                time.sleep(random.uniform(1, 2))
                 udiv = self._get_udiv(uurl, self.cookies[user_id], self.headers[user_id])
                 row = {
                     "cate": 'traverse',

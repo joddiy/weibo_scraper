@@ -37,6 +37,7 @@ class WeiBoHotSearch(object):
         x_tree = get_html(url, (), self.cookies[user_id], self.headers[user_id])
         keywords = x_tree.xpath("/html/body/div[7]/a/text()")
         for keyword in keywords:
+            print(keyword)
             for page in range(1, 21):
                 try:
                     print(page)
